@@ -10,7 +10,6 @@ public class Utils {
 
   private static final Logger LOG = Logger.getLogger(Utils.class.getName());
 
-  private static String tabulation = "\t";
   private static String returnLine = "\r";
   private static String newLine = "\n";
 
@@ -42,7 +41,7 @@ public class Utils {
       }
 
       //Case if we have \r\n
-      if(returnLineIndex + 1 == newLineIndex) {
+      if(returnLineIndex != -1 && returnLineIndex + 1 == newLineIndex) {
         minIndex++;
       }
 

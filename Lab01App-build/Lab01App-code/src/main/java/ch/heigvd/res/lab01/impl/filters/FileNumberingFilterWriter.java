@@ -55,17 +55,19 @@ public class FileNumberingFilterWriter extends FilterWriter {
       out.write(lineNumber + tabulation);
     }
 
-    boolean returnLineNewLine = (lastChar == returnLine && c == newLine);
-
-    if(!returnLineNewLine) {
-      out.write(c);
+    //Case \n or \r\n
+    if(c == newLine) {
+      lineNumber++;
+      out.write("" + (char)c + lineNumber + tabulation);
     }
-
-    if(c == newLine || c == returnLine) {
-      if(!returnLineNewLine) {
-        lineNumber++;
-        out.write(lineNumber + tabulation);
-      }
+    //Case confirm it was only \r
+    else if(lastChar == returnLine) {
+      lineNumber++;
+      out.write(lineNumber + tabulation + (char)c);
+    }
+    //Case first passage \r or other char
+    else {
+      out.write(c);
     }
 
     lastChar = c;
