@@ -10,6 +10,10 @@ public class Utils {
 
   private static final Logger LOG = Logger.getLogger(Utils.class.getName());
 
+  private static String tabulation = "\t";
+  private static String returnLine = "\r";
+  private static String newLine = "\n";
+
   /**
    * This method looks for the next new line separators (\r, \n, \r\n) to extract
    * the next line in the string passed in arguments. 
@@ -21,11 +25,8 @@ public class Utils {
    */
   public static String[] getNextLine(String lines) {
     String[] nextLines = new String[2];
-    String returnLine = "\r";
-    String newLine = "\n";
-    String returnLineNewLine = returnLine + newLine;
 
-    if(lines.contains(newLine) || lines.contains(returnLine) || lines.contains(returnLineNewLine)) {
+    if(lines.contains(newLine) || lines.contains(returnLine) || lines.contains(returnLine + newLine)) {
       int minIndex = lines.length();
       int newLineIndex = lines.indexOf(newLine);
       int returnLineIndex = lines.indexOf(returnLine);
@@ -57,5 +58,4 @@ public class Utils {
     }
     return nextLines;
   }
-
 }
