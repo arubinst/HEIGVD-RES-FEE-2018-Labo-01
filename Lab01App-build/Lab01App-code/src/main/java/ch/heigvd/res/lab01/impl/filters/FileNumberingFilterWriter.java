@@ -23,19 +23,26 @@ public class FileNumberingFilterWriter extends FilterWriter {
     super(out);
   }
 
+  // Add instance variables
+  int nbRows = 1;
+
   @Override
   public void write(String str, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    out.write(nbRows + str, off, len + 1);
+    nbRows++;
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    out.write(cbuf, off, len);
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
   @Override
   public void write(int c) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    out.write(c);
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
 }
