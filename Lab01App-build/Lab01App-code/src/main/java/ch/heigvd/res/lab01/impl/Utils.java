@@ -10,6 +10,9 @@ public class Utils {
 
   private static final Logger LOG = Logger.getLogger(Utils.class.getName());
 
+  private static String returnLine = "\r";
+  private static String newLine = "\n";
+
   /**
    * This method looks for the next new line separators (\r, \n, \r\n) to extract
    * the next line in the string passed in arguments. 
@@ -20,7 +23,38 @@ public class Utils {
    * contain any line separator, then the first element is an empty string.
    */
   public static String[] getNextLine(String lines) {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
-  }
+    String[] nextLines = new String[2];
 
+    if(lines.contains(newLine) || lines.contains(returnLine) || lines.contains(returnLine + newLine)) {
+      int minIndex = lines.length();
+      int newLineIndex = lines.indexOf(newLine);
+      int returnLineIndex = lines.indexOf(returnLine);
+
+      //Search a newLine \n
+      if(newLineIndex != -1 && minIndex > newLineIndex) {
+        minIndex = newLineIndex;
+      }
+
+      //Try to find if we have a better new line \r
+      if(returnLineIndex != -1 && minIndex > returnLineIndex) {
+        minIndex = returnLineIndex;
+      }
+
+      //Case if we have \r\n
+      if(returnLineIndex != -1 && returnLineIndex + 1 == newLineIndex) {
+        minIndex++;
+      }
+
+      minIndex++; //Correction for the substring
+
+      nextLines[0] = lines.substring(0, minIndex);
+      nextLines[1] = lines.substring(minIndex, lines.length());
+
+    }
+    else {
+      nextLines[0] = "";
+      nextLines[1] = lines;
+    }
+    return nextLines;
+  }
 }
