@@ -20,25 +20,20 @@ public class DFSFileExplorer implements IFileExplorer {
     //throw new UnsupportedOperationException("The student has not implemented this method yet.");
 
       if (chaine.length() == 0) {
-          chaine.append(rootDirectory + "\n");
           vistor.visit(rootDirectory);
+          chaine.append(rootDirectory + "\n");
       }
 
-    //chaine.insert(0, ".\workspace\quotes" + "\n");
       if(rootDirectory.isDirectory()) {
-          if (chaine.length() == 0) {
-              chaine.append(rootDirectory + "\n");
-              vistor.visit(rootDirectory);
-          }
 
           for (File fileEntry : rootDirectory.listFiles()) {
               if (fileEntry.isDirectory()) {
-                  chaine.append(fileEntry.getPath() + "\n");
                   vistor.visit(fileEntry);
+                  chaine.append(fileEntry.getPath() + "\n");
                   for (File file : fileEntry.listFiles()) {
                       if (!file.isDirectory()) {
-                          chaine.append(file.getPath() + "\n");
                           vistor.visit(file);
+                          chaine.append(file.getPath() + "\n");
                       }
                   }
                   explore(fileEntry, vistor);

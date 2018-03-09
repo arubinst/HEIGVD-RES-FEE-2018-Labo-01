@@ -97,7 +97,7 @@ public class Application implements IApplication {
       storeQuote(quote, "quote-" + i + ".utf8" );
       //LOG.info("Received a new joke with " + quote.getTags().size() + " tags.");
       for (String tag : quote.getTags()) {
-        LOG.info("> " + tag);
+        //LOG.info("> " + tag);
       }
     }
   }
@@ -182,14 +182,14 @@ public class Application implements IApplication {
   
   @Override
   public String getAuthorEmail() {
-    return "abc@heig-vd.ch";
+    return "elie.ndjolibohulu@heig-vd.ch";
     // throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
   @Override
   public void processQuoteFiles() throws IOException {
     IFileExplorer explorer = new DFSFileExplorer();
-    explorer.explore(new File(WORKSPACE_DIRECTORY), new CompleteFileTransformer());    
+    explorer.explore(new File("./workspace/"), new CompleteFileTransformer());
   }
 
 }
