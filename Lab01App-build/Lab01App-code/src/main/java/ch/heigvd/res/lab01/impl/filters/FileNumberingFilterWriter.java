@@ -25,7 +25,56 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   @Override
   public void write(String str, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    String chaine = str.substring(off, off + len);
+
+    int beginIndex = 0;
+    int endIndex = 0;
+    int lastEndIndex = 0;
+    int compteur = 1;
+    String finalString = "";
+
+    if (chaine.indexOf("\n") != -1) {
+      beginIndex = 0;
+      endIndex = chaine.indexOf("\n");
+      finalString = finalString + (compteur + "\t");
+      while (endIndex != -1) {
+        compteur++;
+        finalString = finalString + chaine.substring(beginIndex, ++endIndex);
+        beginIndex = endIndex;
+
+        lastEndIndex = endIndex;
+        endIndex = chaine.indexOf("\n", endIndex + 1);
+        lastEndIndex = endIndex == -1 ? lastEndIndex : 0;
+
+        finalString = finalString + compteur + "\t";
+      }
+      if(lastEndIndex != chaine.length()){
+        finalString = finalString + chaine.substring(lastEndIndex, chaine.length());
+      }
+      out.write(finalString);
+    }
+    else if (chaine.indexOf("\r") != -1){
+      beginIndex = 0;
+      endIndex = chaine.indexOf("\r");
+      finalString = finalString + (compteur + "\t");
+      while (endIndex != -1) {
+        compteur++;
+        finalString = finalString + chaine.substring(beginIndex, ++endIndex);
+        beginIndex = endIndex;
+
+        lastEndIndex = endIndex;
+        endIndex = chaine.indexOf("\r", endIndex + 1);
+        lastEndIndex = endIndex == -1 ? lastEndIndex : 0;
+
+        finalString = finalString + compteur + "\t";
+      }
+      if(lastEndIndex != chaine.length()){
+        finalString = finalString + chaine.substring(lastEndIndex, chaine.length());
+      }
+      out.write(finalString);
+    }
+
   }
 
   @Override
