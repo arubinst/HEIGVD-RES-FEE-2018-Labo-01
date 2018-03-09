@@ -1,5 +1,7 @@
 package ch.heigvd.res.lab01.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -9,6 +11,7 @@ import java.util.logging.Logger;
 public class Utils {
 
   private static final Logger LOG = Logger.getLogger(Utils.class.getName());
+  private static final String[] SEPARATORS = {"\r\n","\r", "\n"};
 
   /**
    * This method looks for the next new line separators (\r, \n, \r\n) to extract
@@ -20,7 +23,36 @@ public class Utils {
    * contain any line separator, then the first element is an empty string.
    */
   public static String[] getNextLine(String lines) {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+    /*ArrayList<String> lineList = new ArrayList<String>();
+    String[] data = lines.split("(\r\n|\r|\n)+",0);
+    String[] result;
+
+    if (data.length == 0) {
+      result = new String[] {"", lines};
+    } else {
+      for (String line: data) {
+        lineList.add(line);
+        // System.out.println(line);
+      }
+      result = lineList.toArray(new String[0]);
+    }
+
+    return result;*/
+
+    String separator = "";
+    int indexSeparator = 0;
+    for (String SEPARATOR : SEPARATORS) {
+      indexSeparator = lines.indexOf(SEPARATOR);
+      if (indexSeparator > -1) {
+        separator = SEPARATOR;
+        break;
+      }
+    }
+    if( indexSeparator == -1)
+      return new String[] {"", lines};
+
+    return new String[] {lines.substring(0, indexSeparator + separator.length()), lines.substring(indexSeparator + separator.length(), lines.length())};
   }
 
 }

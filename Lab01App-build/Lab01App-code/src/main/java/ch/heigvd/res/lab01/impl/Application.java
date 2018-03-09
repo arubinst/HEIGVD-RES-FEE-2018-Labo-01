@@ -13,9 +13,14 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.commons.io.FileUtils;
+import com.sun.deploy.util.StringUtils;
+
+import javax.swing.text.html.HTML;
 
 /**
  *
@@ -27,7 +32,7 @@ public class Application implements IApplication {
    * This constant defines where the quotes will be stored. The path is relative
    * to where the Java application is invoked.
    */
-  public static String WORKSPACE_DIRECTORY = "./workspace/quotes";
+  public static String WORKSPACE_DIRECTORY = "./output/quotes";
   
   private static final Logger LOG = Logger.getLogger(Application.class.getName());
   
@@ -86,6 +91,10 @@ public class Application implements IApplication {
     QuoteClient client = new QuoteClient();
     for (int i = 0; i < numberOfQuotes; i++) {
       Quote quote = client.fetchQuote();
+
+        // Pattern pattern = Pattern.compile("quote-\\d*.utf8");
+        storeQuote(quote, "quote-"+i+".utf8");
+
       /* There is a missing piece here!
        * As you can see, this method handles the first part of the lab. It uses the web service
        * client to fetch quotes. We have removed a single line from this method. It is a call to
@@ -125,7 +134,12 @@ public class Application implements IApplication {
    * @throws IOException 
    */
   void storeQuote(Quote quote, String filename) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+      String path = WORKSPACE_DIRECTORY + "/" + StringUtils.join(quote.getTags(), "/") + "/";
+      new File(path).mkdirs();
+      OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(path + "/" + filename), StandardCharsets.UTF_8);
+      writer.write(quote.getQuote());
+      writer.flush();
+      writer.close();
   }
   
   /**
@@ -137,6 +151,11 @@ public class Application implements IApplication {
     explorer.explore(new File(WORKSPACE_DIRECTORY), new IFileVisitor() {
       @Override
       public void visit(File file) {
+        try {
+          writer.append(file + "\n");
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
         /*
          * There is a missing piece here. Notice how we use an anonymous class here. We provide the implementation
          * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
@@ -148,7 +167,7 @@ public class Application implements IApplication {
   
   @Override
   public String getAuthorEmail() {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    return "cyril.debourgues@heig-vd.ch";
   }
 
   @Override

@@ -11,22 +11,34 @@ import java.io.Writer;
 public class UpperCaseFilterWriter extends FilterWriter {
   
   public UpperCaseFilterWriter(Writer wrappedWriter) {
-    super(wrappedWriter);
+      super(wrappedWriter);
   }
 
   @Override
   public void write(String str, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+    char[] charArray = str.toCharArray();
+    write(charArray, off, len);
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+    assert len <= cbuf.length;
+    assert off >= 0;
+
+    for (int i = off; i < len+off; i++){
+      write(cbuf[i]);
+    }
   }
 
   @Override
   public void write(int c) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+    // assert is_ASCII
+    // assert
+    c = Character.toUpperCase((char)c);
+    out.append((char)c);
   }
 
 }
