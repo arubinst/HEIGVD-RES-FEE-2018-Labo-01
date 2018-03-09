@@ -1,5 +1,6 @@
 package ch.heigvd.res.lab01.impl;
 
+import java.util.Scanner;
 import java.util.logging.Logger;
 
 /**
@@ -20,7 +21,25 @@ public class Utils {
    * contain any line separator, then the first element is an empty string.
    */
   public static String[] getNextLine(String lines) {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+    String[] retour = {"",""};
+    //recuperer l'index de la nouvelle ligne
+    int index = lines.indexOf("\n"); //si on ne trouve rien index vaut -1
+    if(index == -1){
+      index = lines.indexOf("\r");
+    }
+
+    if(-1 == index){ //cas ou il n'y a qu'une seule ligne
+      retour[1] = lines;
+    }else{
+      retour[0] = lines.substring(0,index+1);
+
+      if(lines.length() > index + 1){
+        retour[1] = lines.substring(index+1);
+      }
+    }
+
+    return retour;
   }
 
 }

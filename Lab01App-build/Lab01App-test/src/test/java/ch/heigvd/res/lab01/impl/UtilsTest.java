@@ -16,6 +16,8 @@ public class UtilsTest {
   public void itShouldBePossibleToGetANewLineOnWindows() {
     String lines = "hello\r\nworld\r\n";
     String[] r1 = Utils.getNextLine(lines);
+    System.out.println(r1[0]);
+    System.out.println(r1[1]);
     String[] e1 = {"hello\r\n", "world\r\n"};
     assertArrayEquals(e1, r1);
     String[] r2 = Utils.getNextLine(r1[1]);
@@ -28,6 +30,8 @@ public class UtilsTest {
     String lines = "hello\rworld\r";
     String[] r1 = Utils.getNextLine(lines);
     String[] e1 = {"hello\r", "world\r"};
+    System.out.println(r1[0]);
+    System.out.println(r1[1]);
     assertArrayEquals(e1, r1);
     String[] r2 = Utils.getNextLine(r1[1]);
     String[] e2 = {"world\r", ""};
