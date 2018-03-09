@@ -2,7 +2,6 @@ package ch.heigvd.res.lab01.impl.explorers;
 
 import ch.heigvd.res.lab01.interfaces.IFileExplorer;
 import ch.heigvd.res.lab01.interfaces.IFileVisitor;
-
 import java.io.File;
 
 /**
@@ -15,32 +14,9 @@ import java.io.File;
  */
 public class DFSFileExplorer implements IFileExplorer {
 
-
   @Override
   public void explore(File rootDirectory, IFileVisitor vistor) {
-    //TODO implementer le parcourt recursif dans le fichiers
-
-      if(rootDirectory == null){
-          return;
-      }
-
-      vistor.visit(rootDirectory);
-
-      if (rootDirectory.isDirectory()){
-          File[] paths = rootDirectory.listFiles();
-          if(paths == null){ //pas de sous dossier, ni fichier
-              return;
-          }
-          for(File f : rootDirectory.listFiles()){
-              if (f.isFile()) //D'abord le fichier
-                explore(f,vistor);
-          }
-          for (File f : rootDirectory.listFiles()){
-              if(f.isDirectory()) //Ensuite les repertoires
-                explore(f,vistor);
-          }
-      }else{
-          return;
-      }
+    throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
+
 }
