@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 public class Utils {
 
   private static final Logger LOG = Logger.getLogger(Utils.class.getName());
-
+  private static final String[] SEP = {"\r\n","\r", "\n"};
   /**
    * This method looks for the next new line separators (\r, \n, \r\n) to extract
    * the next line in the string passed in arguments. 
@@ -20,7 +20,19 @@ public class Utils {
    * contain any line separator, then the first element is an empty string.
    */
   public static String[] getNextLine(String lines) {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    String separator = "";
+    int index = 0;
+    for (String sepStr : SEP) {
+      index = lines.indexOf(sepStr);
+      if (index > -1) {
+        separator = sepStr;
+        break;
+      }
+    }
+    if( index == -1)
+      return new String[] {"", lines};
+
+    return new String[] {lines.substring(0, index + separator.length()), lines.substring(index + separator.length(), lines.length())};
   }
 
 }
