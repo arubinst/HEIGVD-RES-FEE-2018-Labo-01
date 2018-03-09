@@ -20,11 +20,8 @@ public class FileNumberingFilterWriter extends FilterWriter {
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
 
   private int compteur = 1;
-  private int beginIndex = 0;
-  private int endIndex = 0;
-  private int lastEndIndex = 0;
-  String finalString = "";
-
+  private boolean charFlag = false;
+  private boolean rFlag = false;
 
   public FileNumberingFilterWriter(Writer out) {
     super(out);
@@ -35,9 +32,7 @@ public class FileNumberingFilterWriter extends FilterWriter {
     //throw new UnsupportedOperationException("The student has not implemented this method yet.");
     String chaine = str.substring(off, off + len);
 
-    int beginIndex = 0;
     int endIndex = 0;
-    int lastEndIndex = 0;
     String finalString = "";
 
     String outContent = out.toString();
@@ -95,20 +90,30 @@ public class FileNumberingFilterWriter extends FilterWriter {
   public void write(int c) throws IOException {
     //throw new UnsupportedOperationException("The student has not implemented this method yet.");
 
-    String outContent = out.toString();
-
-    if(outContent.length() == 0){
+    if(!charFlag){
       out.write(compteur + "\t");
       compteur++;
+      charFlag = true;
     }
 
-    if((char) c != '\n'){
+    if((char) c != '\n' && (char) c != '\r' && !rFlag){
       out.write((char)c);
     }
-    else{
+    else if((char) c == '\n' && rFlag){
+      out.write("\r\n" + compteur + "\t");
+      rFlag = false;
+      compteur++;
+    }
+    else if((char) c == '\n'){
       out.write("\n" + compteur + "\t");
       compteur++;
     }
+    else if((char) c == '\r'){
+      rFlag = true;
+    }
+    else if(rFlag && (char) c != '\n'){
+      out.write("\r" + compteur + "\t" + (char) c);
+      rFlag = false;
+    }
   }
-
 }
