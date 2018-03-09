@@ -79,6 +79,7 @@ public class ApplicationTest {
         return file.endsWith(".utf8.out");
       }
     }, TrueFileFilter.INSTANCE);
+    System.out.println(files.size());
     assertEquals(NUMBER_OF_QUOTES, files.size());
   }
 

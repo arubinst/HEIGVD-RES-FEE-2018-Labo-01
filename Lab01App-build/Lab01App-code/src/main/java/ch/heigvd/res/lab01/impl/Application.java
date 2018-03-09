@@ -95,9 +95,9 @@ public class Application implements IApplication {
        * quote in a text file (and for generating the directories based on the tags).
        */
       storeQuote(quote, "quote-" + i + ".utf8" );
-      //LOG.info("Received a new joke with " + quote.getTags().size() + " tags.");
+      LOG.info("Received a new joke with " + quote.getTags().size() + " tags.");
       for (String tag : quote.getTags()) {
-        //LOG.info("> " + tag);
+        LOG.info("> " + tag);
       }
     }
   }
