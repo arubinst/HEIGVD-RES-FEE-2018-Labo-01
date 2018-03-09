@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+
 /**
  * This abstract class implements the IFileVisitor interface and has the responsibility
  * to open an input text file, to read its content, to apply a number of transformations
@@ -50,8 +52,14 @@ public abstract class FileTransformer implements IFileVisitor {
     }
     try {
       Reader reader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+
       Writer writer = new OutputStreamWriter(new FileOutputStream(file.getPath()+ ".out"), "UTF-8"); // the bug fix by teacher
-      writer = decorateWithFilters(writer);
+        char buffer [] = new char[512];
+        while(( reader.read(buffer)) != -1){
+            System.out.println(buffer);
+      }
+        writer = decorateWithFilters(writer);
+        //writer = new CompleteFileTransformer(writer);
 
       /*
        * There is a missing piece here: you have an input reader and an ouput writer (notice how the 

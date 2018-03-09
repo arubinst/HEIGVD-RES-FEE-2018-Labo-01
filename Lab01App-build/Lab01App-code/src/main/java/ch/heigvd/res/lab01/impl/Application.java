@@ -7,12 +7,12 @@ import ch.heigvd.res.lab01.interfaces.IFileExplorer;
 import ch.heigvd.res.lab01.interfaces.IFileVisitor;
 import ch.heigvd.res.lab01.quotes.QuoteClient;
 import ch.heigvd.res.lab01.quotes.Quote;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+
+import java.io.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -28,6 +28,7 @@ public class Application implements IApplication {
    * to where the Java application is invoked.
    */
   public static String WORKSPACE_DIRECTORY = "./workspace/quotes";
+  public static String QUOTENAME = "quote-";
   
   private static final Logger LOG = Logger.getLogger(Application.class.getName());
   
@@ -73,7 +74,7 @@ public class Application implements IApplication {
        *          (convert to uppercase and add line numbers)
        */
       app.processQuoteFiles();
-      
+
     } catch (IOException ex) {
       LOG.log(Level.SEVERE, "Could not fetch quotes. {0}", ex.getMessage());
       ex.printStackTrace();
@@ -92,10 +93,43 @@ public class Application implements IApplication {
        * one method provided by this class, which is responsible for storing the content of the
        * quote in a text file (and for generating the directories based on the tags).
        */
+
       LOG.info("Received a new joke with " + quote.getTags().size() + " tags.");
-      for (String tag : quote.getTags()) {
+      List<String> tmp = quote.getTags();
+      Collections.sort(tmp, new Comparator<String>() {
+        @Override
+        public int compare(String o1, String o2) {
+          return o1.compareTo(o2);
+        }
+      });
+
+      String path = WORKSPACE_DIRECTORY;
+      for (String tag : tmp) {
         LOG.info("> " + tag);
+        path = path + "\\" + tag;
       }
+      path = path + "\\";
+
+      storeQuote(quote, path, i);
+      /*
+      Permet de créer les dossiers nécessaires à l'arborescence voulu
+       *
+      String path = WORKSPACE_DIRECTORY;
+      for (String tag : tmp) {
+        LOG.info("> " + tag);
+        path = path + "\\" + tag;
+      }
+      path = path + "\\";
+      File f = new File(path);
+      f.mkdirs();
+      /*
+      Permet d'enregistrer la quote
+       *
+      OutputStreamWriter newOutput = new OutputStreamWriter(new FileOutputStream(path + QUOTENAME + i + ".utf8"), "UTF-8");
+
+      newOutput.write(quote.getQuote());
+      newOutput.close();
+      */
     }
   }
   
@@ -122,10 +156,24 @@ public class Application implements IApplication {
    * 
    * @param quote the quote object, with tags and text
    * @param filename the name of the file to create and where to store the quote text
+   * @param index the current index of quote
    * @throws IOException 
    */
-  void storeQuote(Quote quote, String filename) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+  void storeQuote(Quote quote, String filename, int index) throws IOException {
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+    /*
+    Permet de créer le dossier à partir du nom de fichier généré avec les tags.
+     */
+    File f = new File(filename);
+    f.mkdirs();
+      /*
+      Permet d'enregistrer la quote
+       */
+    OutputStreamWriter newOutput = new OutputStreamWriter(new FileOutputStream(filename + QUOTENAME + index + ".utf8"), "UTF-8");
+
+    newOutput.write(quote.getQuote());
+    newOutput.close();
   }
   
   /**
@@ -148,7 +196,8 @@ public class Application implements IApplication {
   
   @Override
   public String getAuthorEmail() {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    return "andre.jacquemond@heig-vd.ch";
   }
 
   @Override
