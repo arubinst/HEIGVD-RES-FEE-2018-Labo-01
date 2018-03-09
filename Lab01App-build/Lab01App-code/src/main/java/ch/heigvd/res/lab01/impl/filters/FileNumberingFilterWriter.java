@@ -20,6 +20,10 @@ public class FileNumberingFilterWriter extends FilterWriter {
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
 
   private int compteur = 1;
+  private int beginIndex = 0;
+  private int endIndex = 0;
+  private int lastEndIndex = 0;
+  String finalString = "";
 
 
   public FileNumberingFilterWriter(Writer out) {
@@ -38,54 +42,36 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
     String outContent = out.toString();
     compteur = nbSubstring(outContent, "\t");
-
-    if (compteur == 1) {
-      if(!(outContent.length() != 0 && outContent.indexOf("\n") <= 0)){
-        finalString = finalString + compteur + "\t";
-      }
+    if(outContent.equals("")){
+      finalString += compteur + "\t";
     }
 
-    if (chaine.indexOf("\r") == -1 || (outContent.indexOf("\r") == -1 && outContent.length() != 0) || chaine.indexOf("\r\n") != -1) {
-      beginIndex = 0;
-      endIndex = chaine.indexOf("\n");
-
-      while (endIndex != -1) {
-        compteur++;
-        finalString = finalString + chaine.substring(beginIndex, ++endIndex);
-        beginIndex = endIndex;
-
-        lastEndIndex = endIndex;
-        endIndex = chaine.indexOf("\n", endIndex + 1);
-        lastEndIndex = endIndex == -1 ? lastEndIndex : 0;
-
-        finalString = finalString + compteur + "\t";
-
+    while (chaine.length() != 0){
+      if(chaine.indexOf("\n") != -1){
+        endIndex = chaine.indexOf("\n");
+        finalString += chaine.substring(0, endIndex + 1);
+        finalString += ++compteur + "\t";
+        chaine = chaine.substring(endIndex + 1, chaine.length());
       }
-      if(lastEndIndex != chaine.length()){
-        finalString = finalString + chaine.substring(lastEndIndex, chaine.length());
+      else if(chaine.indexOf("\r") != -1){
+        endIndex = chaine.indexOf("\r");
+        finalString += chaine.substring(0, endIndex + 1);
+        finalString += ++compteur + "\t";
+        chaine = chaine.substring(endIndex + 1, chaine.length());
       }
-      out.write(finalString);
+      else{
+        endIndex = endIndex == 0 ? chaine.length() : endIndex;
+        endIndex = endIndex > chaine.length() ? chaine.length() : endIndex;
+        finalString += chaine.substring(0, endIndex);
+        if(endIndex == chaine.length()){
+          chaine = "";
+        }
+        else{
+          chaine = chaine.substring(endIndex + 1, chaine.length());
+        }
+      }
     }
-    else if (chaine.indexOf("\r") != -1){
-      beginIndex = 0;
-      endIndex = chaine.indexOf("\r");
-      while (endIndex != -1) {
-        compteur++;
-        finalString = finalString + chaine.substring(beginIndex, ++endIndex);
-        beginIndex = endIndex;
-
-        lastEndIndex = endIndex;
-        endIndex = chaine.indexOf("\r", endIndex + 1);
-        lastEndIndex = endIndex == -1 ? lastEndIndex : 0;
-
-        finalString = finalString + compteur + "\t";
-      }
-      if(lastEndIndex != chaine.length()){
-        finalString = finalString + chaine.substring(lastEndIndex, chaine.length());
-      }
-      out.write(finalString);
-    }
-    compteur = 0;
+    out.write(finalString);
   }
 
   int nbSubstring(String str, String subStr){
