@@ -19,6 +19,9 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
 
+  private int compteur = 1;
+
+
   public FileNumberingFilterWriter(Writer out) {
     super(out);
   }
@@ -31,13 +34,21 @@ public class FileNumberingFilterWriter extends FilterWriter {
     int beginIndex = 0;
     int endIndex = 0;
     int lastEndIndex = 0;
-    int compteur = 1;
     String finalString = "";
 
-    if (chaine.indexOf("\n") != -1) {
+    String outContent = out.toString();
+    compteur = nbSubstring(outContent, "\t");
+
+    if (compteur == 1) {
+      if(!(outContent.length() != 0 && outContent.indexOf("\n") <= 0)){
+        finalString = finalString + compteur + "\t";
+      }
+    }
+
+    if (chaine.indexOf("\r") == -1 || (outContent.indexOf("\r") == -1 && outContent.length() != 0) || chaine.indexOf("\r\n") != -1) {
       beginIndex = 0;
       endIndex = chaine.indexOf("\n");
-      finalString = finalString + (compteur + "\t");
+
       while (endIndex != -1) {
         compteur++;
         finalString = finalString + chaine.substring(beginIndex, ++endIndex);
@@ -48,6 +59,7 @@ public class FileNumberingFilterWriter extends FilterWriter {
         lastEndIndex = endIndex == -1 ? lastEndIndex : 0;
 
         finalString = finalString + compteur + "\t";
+
       }
       if(lastEndIndex != chaine.length()){
         finalString = finalString + chaine.substring(lastEndIndex, chaine.length());
@@ -57,7 +69,6 @@ public class FileNumberingFilterWriter extends FilterWriter {
     else if (chaine.indexOf("\r") != -1){
       beginIndex = 0;
       endIndex = chaine.indexOf("\r");
-      finalString = finalString + (compteur + "\t");
       while (endIndex != -1) {
         compteur++;
         finalString = finalString + chaine.substring(beginIndex, ++endIndex);
@@ -74,7 +85,19 @@ public class FileNumberingFilterWriter extends FilterWriter {
       }
       out.write(finalString);
     }
+    compteur = 0;
+  }
 
+  int nbSubstring(String str, String subStr){
+    int index = str.indexOf(subStr);
+    int count = 0;
+    while (index != -1) {
+      count++;
+      str = str.substring(index + 1);
+      index = str.indexOf(subStr);
+    }
+    count = count == 0 ? 1 : count;
+    return count;
   }
 
   @Override
@@ -84,7 +107,22 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   @Override
   public void write(int c) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+    String outContent = out.toString();
+
+    if(outContent.length() == 0){
+      out.write(compteur + "\t");
+      compteur++;
+    }
+
+    if((char) c != '\n'){
+      out.write((char)c);
+    }
+    else{
+      out.write("\n" + compteur + "\t");
+      compteur++;
+    }
   }
 
 }
