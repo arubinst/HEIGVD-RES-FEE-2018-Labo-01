@@ -1,5 +1,6 @@
 package ch.heigvd.res.lab01.impl.transformers;
 
+import ch.heigvd.res.lab01.impl.Utils;
 import ch.heigvd.res.lab01.interfaces.IFileVisitor;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -58,7 +60,14 @@ public abstract class FileTransformer implements IFileVisitor {
        * writer has been decorated by the concrete subclass!). You need to write a loop to read the
        * characters and write them to the writer.
        */
-      
+
+      int letter = reader.read();
+
+      while(letter != -1) { //-1 == eof
+        writer.write((char) letter);
+        letter = reader.read();
+      }
+
       reader.close();
       writer.flush();
       writer.close();
