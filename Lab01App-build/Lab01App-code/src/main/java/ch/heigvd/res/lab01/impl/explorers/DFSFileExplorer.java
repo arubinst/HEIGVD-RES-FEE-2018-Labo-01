@@ -25,14 +25,14 @@ public class DFSFileExplorer implements IFileExplorer {
         // If we are at an empty leaf (so end of current path), just return
         if (list == null) return;
 
-        // Visite each file in the directory
+        // First, explore each file in the directory
         for (File f : list) {
             if (f.isFile()) {
-                visitor.visit(f);
+                explore(f, visitor);
             }
         }
 
-        // Explore each subdirectory
+        // Then, explore each subdirectory
         for (File f : list) {
             if (f.isDirectory()) {
                 explore(f, visitor);

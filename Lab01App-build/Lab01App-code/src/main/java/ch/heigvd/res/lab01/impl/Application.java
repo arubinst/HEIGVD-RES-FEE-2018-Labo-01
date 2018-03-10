@@ -153,8 +153,8 @@ public class Application implements IApplication {
                 try {
                     // Call the writer with the full file name
                     writer.write(file.getPath() + '\n');
-                } catch (IOException e) {
-                    LOG.log(Level.SEVERE, null, e);
+                } catch (IOException e){
+                    e.printStackTrace();
                 }
             }
         });
