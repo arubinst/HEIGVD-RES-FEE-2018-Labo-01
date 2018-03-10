@@ -24,14 +24,28 @@ public class Utils {
     //if(currentChar == \r or currentChar == \n)
     //return lines.split("\n");
     //find + substring
-    int pos = lines.indexOf("\n");
-    int pos1 = lines.indexOf("\r");
-    if(pos > pos1){
-      pos = pos1;
-    }
     String[] separated = new String[2];
-    separated[0] = lines.substring(0, pos);
-    separated[1] = lines.substring(pos);
+
+    int pos = lines.indexOf("\r\n");
+    int pos1 = lines.indexOf("\n");
+    int pos2 = lines.indexOf("\r");
+    if(pos == -1) {
+      if (pos1 != -1) {
+        if (pos2 == -1 || pos1 < pos2)
+          pos = pos1;
+      }
+      else {
+        if (pos2 != -1) {
+          pos = pos2;
+        }
+      }
+      separated[0] = lines.substring(0, pos + 1);
+      separated[1] = lines.substring(pos + 1);
+    }
+    else{
+      separated[0] = lines.substring(0, pos + 2);
+      separated[1] = lines.substring(pos + 2);
+    }
     return separated;
   }
 
