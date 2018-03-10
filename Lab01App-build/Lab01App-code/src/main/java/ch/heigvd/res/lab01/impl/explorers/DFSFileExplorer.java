@@ -22,6 +22,7 @@ public class DFSFileExplorer implements IFileExplorer {
         // Visit the current directory
         visitor.visit(rootDirectory);
 
+        // If we are at an empty leaf (so end of current path), just return
         if (list == null) return;
 
         // Visite each file in the directory
@@ -38,5 +39,4 @@ public class DFSFileExplorer implements IFileExplorer {
             }
         }
     }
-
 }

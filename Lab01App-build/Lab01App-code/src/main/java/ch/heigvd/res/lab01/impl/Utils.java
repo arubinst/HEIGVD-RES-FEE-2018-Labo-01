@@ -36,13 +36,6 @@ public class Utils {
           return rows;
       }
 
-/*      // If the last element is not an EOL, we return only an empty string
-      if ((lines.charAt(lines.length() - 1) != '\n') && (lines.charAt(lines.length() - 1) != '\r')) {
-          rows[0] = new String();
-          rows[1] = lines;
-          return rows;
-      }*/
-
       // Put 'lines' content into the sb1 StirngBuffer, then move characters to sb0, until a EOL is encountered
       sb1.append(lines);
       for (int i = 0; i < lines.length(); i++) {

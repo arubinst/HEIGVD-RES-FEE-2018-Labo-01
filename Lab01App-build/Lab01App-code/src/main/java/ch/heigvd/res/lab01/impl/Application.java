@@ -151,16 +151,11 @@ public class Application implements IApplication {
             @Override
             public void visit(File file) {
                 try {
+                    // Call the writer with the full file name
                     writer.write(file.getPath() + '\n');
                 } catch (IOException e) {
                     LOG.log(Level.SEVERE, null, e);
                 }
-
-                /*
-                 * There is a missing piece here. Notice how we use an anonymous class here. We provide the implementation
-                 * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
-                 * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
-                 */
             }
         });
     }

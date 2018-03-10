@@ -55,6 +55,7 @@ public abstract class FileTransformer implements IFileVisitor {
 
       int character = reader.read();
 
+      // Read from the buffer until there are no more characters in it
       while(character != -1) {
         writer.write((char)character);
         character = reader.read();
