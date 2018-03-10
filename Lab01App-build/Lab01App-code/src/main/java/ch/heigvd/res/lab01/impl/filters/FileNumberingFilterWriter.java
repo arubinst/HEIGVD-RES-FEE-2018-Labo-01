@@ -1,5 +1,7 @@
 package ch.heigvd.res.lab01.impl.filters;
 
+import ch.heigvd.res.lab01.impl.Utils;
+
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -25,24 +27,47 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   // Add instance variables
   int nbRows = 1;
+  boolean firstRow = true;
+  int lastCharacter = ' ';
+
 
   @Override
   public void write(String str, int off, int len) throws IOException {
-    out.write(nbRows + str, off, len + 1);
-    nbRows++;
-    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    // Call write method with character array
+    this.write(str.toCharArray(), off, len);
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
-    out.write(cbuf, off, len);
-    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    for(int i = off; i < off + len; i++) {
+      // For each character, call character write method
+      this.write(cbuf[i]);
+    }
   }
 
   @Override
   public void write(int c) throws IOException {
-    out.write(c);
-    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
-  }
+    // Handle case of 1st row
+    if(firstRow) {
+      firstRow = false;
+      out.write(nbRows + "\t");
+    }
 
+    // Handle \n
+    if(c == '\n') {
+      nbRows++;
+      out.write("" + (char)c + nbRows + "\t");
+    }
+    // Special case for Windows EOL
+    else if(lastCharacter == '\r') {
+      // Pre-increment nbRows before writing
+      out.write(++nbRows + "\t" + (char)c);
+    }
+    // Write single character (so, we are not at the end of a line)
+    else {
+      out.write(c);
+    }
+
+    lastCharacter = c;
+  }
 }
