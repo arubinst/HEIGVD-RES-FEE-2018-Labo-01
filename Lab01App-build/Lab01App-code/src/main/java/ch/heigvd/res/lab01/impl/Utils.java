@@ -21,24 +21,29 @@ public class Utils {
    * contain any line separator, then the first element is an empty string.
    */
   public static String[] getNextLine(String lines) {
-    StringBuilder ligne = new StringBuilder(lines);
-    boolean finish = false;
     int charPosition = 0;
-    while (!finish){
-      char car = ligne.charAt(charPosition);
-      if (car == '\n' || car == '\r'){
-            finish = true;
-            charPosition = charPosition + 1;
-      }
-      else{
-        //pas de à la ligne, il faut tester le suivant char.
-        charPosition = charPosition + 1;
-        if (ligne.length() == charPosition){
-          charPosition = 0;
-          finish = true;}
-      }
+
+    if(!lines.isEmpty()){
+        while (true) {
+            char car = lines.charAt(charPosition);
+
+            if (car == '\n' || car == '\r') {
+                if (charPosition+1<lines.length()) {
+                    if (car == '\r' && lines.charAt(charPosition + 1) == '\n') {
+                        return new String[]{lines.substring(0, charPosition + 2), lines.substring(charPosition + 2, lines.length())};
+                    }
+                }
+                return new String[]{lines.substring(0, charPosition+1), lines.substring(charPosition+1, lines.length())};
+            } else {
+                charPosition++;
+                //pas de à la ligne, il faut tester le suivant char.
+                if (lines.length() == charPosition) {
+                    return new String[]{"", lines};
+                }
+            }
+        }
     }
-    return new String[]{ligne.substring(0, charPosition), ligne.substring(charPosition, ligne.length())};
+    return new String[]{"",""};
   }
 
 }
