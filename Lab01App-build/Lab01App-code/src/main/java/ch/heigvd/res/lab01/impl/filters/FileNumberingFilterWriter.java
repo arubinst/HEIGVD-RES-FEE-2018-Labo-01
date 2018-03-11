@@ -20,7 +20,11 @@ import java.util.logging.Logger;
 public class FileNumberingFilterWriter extends FilterWriter {
 
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
-  private int lineCount = 1;
+  private int lineCount = 0;
+  private static final char TAB = '\t';
+  private static final char BACKSLASH_N = '\n';
+  private static final char BACKSLASH_R = '\r';
+  private boolean lastBackSlashR = false;
 
   public FileNumberingFilterWriter(Writer out) {
       super(out);
@@ -29,38 +33,52 @@ public class FileNumberingFilterWriter extends FilterWriter {
   @Override
   public void write(String str, int off, int len) throws IOException {
 
-      String line = new String(str.substring(off, len+off));
-      String arrLines[] = Utils.getNextLine(line);
-      // super.write((lineCount++) + "\t" + str, off, len+off);
+      // Vars
+      String output = "";
+      String[] lines = new String[2];
+      lines[1] = str.substring(off, off + len); // Handle offset / length
 
-      /*int i = 0;
-      for (String s: arrLines) {
-          if (s.indexOf("\n") != -1 ||s.indexOf("\r\n") != -1 ||s.indexOf("\r") != -1) {
-              out.write(lineCount + "\t" + s);
-              lineCount++;
-          }
-      }*/
-      out.write(lineCount + "\t" + line);
-      lineCount++;
+      // First output ?
+      if (lineCount == 0) {
+          output += String.valueOf(++lineCount) + TAB;
+      }
 
-      /*for (int i = 0; i < arrLines.length; ++i) {
-          if (arrLines[i].indexOf("\n") != -1 || arrLines[i].indexOf("\r\n") != -1 || arrLines[i].indexOf("\r") != -1) {
-              arrLines[i] = lineCount + "\t" + arrLines[i];
-              out.write(arrLines[i]);
-              lineCount++;
-          }
-      }*/
+      // Chunk line feeds
+      while (!(lines = Utils.getNextLine(lines[1]))[0].isEmpty()) {
+          output += lines[0] + String.valueOf(++lineCount) + TAB;
+      }
+      // Append the rest
+      output += lines[1];
+
+      // Write output
+      out.write(output);
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
+
+      // Basically make a String from chars array and call the above method
       String str = new String(cbuf);
       write(str, off, len);
   }
 
   @Override
   public void write(int c) throws IOException {
-      //
+
+      String output = "";
+      if (c != BACKSLASH_R || lastBackSlashR) {
+          if (c != BACKSLASH_N && lastBackSlashR) {
+              lastBackSlashR = false;
+              output = String.valueOf(++lineCount) + TAB + (char) c;
+          } else {
+              output = String.valueOf((char) c);
+              lastBackSlashR = false;
+          }
+          write(output);
+      } else {
+          lastBackSlashR = true;
+          out.write(c);
+      }
   }
 
 }

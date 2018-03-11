@@ -1,9 +1,11 @@
 package ch.heigvd.res.lab01.impl.explorers;
 
-import ch.heigvd.res.lab01.impl.transformers.FileTransformer;
 import ch.heigvd.res.lab01.interfaces.IFileExplorer;
 import ch.heigvd.res.lab01.interfaces.IFileVisitor;
+
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 
 /**
  * This implementation of the IFileExplorer interface performs a depth-first
@@ -15,27 +17,47 @@ import java.io.File;
  */
 public class DFSFileExplorer implements IFileExplorer {
 
-  @Override
-  public void explore(File rootDirectory, IFileVisitor vistor) {
-    // get list of all files and directories present in root
-    File[] listOfFilesAndDirectory = rootDirectory.listFiles();
-    vistor.visit(rootDirectory);
+    @Override
+    public void explore(File rootDirectory, IFileVisitor vistor) {
 
-    // listFiles() returns non-null array if root denotes a directory
-    if (listOfFilesAndDirectory != null)
-    {
-      for (File file : listOfFilesAndDirectory)
-      {
-        // if file denotes a directory, recurse for it
-        if (file.isDirectory()) {
+        /*
+        I would have prefered the following option but could not get it working
 
-          explore(file, vistor);
+        for (File file : rootDirectory.listFiles()) {
+            directories = file.listFiles(File::isDirectory);
+            files = file.listFiles(File::isFile);
         }
-        // if file denotes a file
-        else {
-          vistor.visit(file);
+         */
+
+        // https://stackoverflow.com/a/27940412/1336418
+        File[] files = rootDirectory.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.isFile();
+            }
+        });
+        File[] folders = rootDirectory.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.isDirectory();
+            }
+        });
+
+        // Start with rootDirectory
+        vistor.visit(rootDirectory);
+
+        // Handle files in folder
+        if(files != null) {
+            for (File file : files) {
+                vistor.visit(file);
+            }
         }
-      }
+
+        // Recursive call for that sub-folder
+        if(folders != null) {
+            for (File folder : folders) {
+                explore(folder, vistor);
+            }
+        }
     }
-  }
 }

@@ -24,8 +24,9 @@ public class UpperCaseFilterWriter extends FilterWriter {
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
 
+    // Make sure we do not request a len longer than cbuf
     assert len <= cbuf.length;
-    assert off >= 0;
+    assert off >= 0;  // Offset should be strictly >= 0
 
     for (int i = off; i < len+off; i++){
       write(cbuf[i]);
@@ -35,8 +36,8 @@ public class UpperCaseFilterWriter extends FilterWriter {
   @Override
   public void write(int c) throws IOException {
 
-    // assert is_ASCII
-    // assert
+    // Make sure char is ASCII
+    // assert c >= 32 && c < 127;
     c = Character.toUpperCase((char)c);
     out.append((char)c);
   }

@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
-import com.sun.deploy.util.StringUtils;
 
 import javax.swing.text.html.HTML;
 
@@ -134,9 +133,14 @@ public class Application implements IApplication {
    * @throws IOException 
    */
   void storeQuote(Quote quote, String filename) throws IOException {
-      String path = WORKSPACE_DIRECTORY + "/" + StringUtils.join(quote.getTags(), "/") + "/";
-      new File(path).mkdirs();
-      OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(path + "/" + filename), StandardCharsets.UTF_8);
+
+      String delimiter = "/";
+
+      // https://stackoverflow.com/a/26195047/1336418
+      String relativPath = WORKSPACE_DIRECTORY + delimiter + String.join(delimiter, quote.getTags()) + delimiter;
+      new File(relativPath).mkdirs();
+      OutputStreamWriter writer = new OutputStreamWriter(
+              new FileOutputStream(relativPath + "/" + filename), StandardCharsets.UTF_8);
       writer.write(quote.getQuote());
       writer.flush();
       writer.close();
