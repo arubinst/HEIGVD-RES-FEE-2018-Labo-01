@@ -31,6 +31,13 @@ public class DFSFileExplorer implements IFileExplorer {
     if (!first_visit){
       vistor.visit(rootDirectory);
       first_visit = true;
+      if (rootDirectory.isDirectory()) {
+        for (File list_file_2nd : rootDirectory.listFiles()) {
+          if (list_file_2nd.isFile()) {
+            vistor.visit(list_file_2nd);
+          }
+        }
+      }
     }
     if (rootDirectory.isDirectory()) {
       for (File list_files : rootDirectory.listFiles()) {
