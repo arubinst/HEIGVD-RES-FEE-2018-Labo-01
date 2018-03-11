@@ -28,6 +28,9 @@ public class Utils {
       Permet de prendre le cas de windows ou Mac
        */
       if(lines.charAt(index) == '\r'){
+        /*
+        Permet de vérifier que le prochain est un "line feed" spécifique à Windows
+         */
         if(index < lines.length() -1 && lines.charAt(index + 1) == '\n') {
           nextLine = lines.substring(index + 2);
           currentLine = lines.substring(0,index + 2);

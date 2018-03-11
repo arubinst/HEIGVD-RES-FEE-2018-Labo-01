@@ -166,7 +166,7 @@ public class Application implements IApplication {
     File directory = new File(path);
     directory.mkdirs();
       /*
-      Permet d'enregistrer la quote
+      Permet d'enregistrer la quote avec le format UTF-8
        */
       File fileQuote = new File(directory, filename);
       fileQuote.createNewFile();
@@ -200,7 +200,11 @@ public class Application implements IApplication {
       }
     });
   }
-  
+
+  /**
+   * Permet de retourner l'email de l'auteur de ce code
+   * @return String contenant un email
+   */
   @Override
   public String getAuthorEmail() {
     //throw new UnsupportedOperationException("The student has not implemented this method yet.");

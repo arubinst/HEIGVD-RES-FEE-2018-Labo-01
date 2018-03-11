@@ -19,15 +19,20 @@ public class DFSFileExplorer implements IFileExplorer {
   public void explore(File rootDirectory, IFileVisitor vistor) {
     //throw new UnsupportedOperationException("The student has not implemented this method yet.");
     /*
-    Permet de tester si le répertoire de travail est inexistant
+    Permet de commencer par visiter le répertoire de travail
      */
-    if (rootDirectory.exists()) {
       vistor.visit(rootDirectory);
+      /*
+      Permet de tester que rootDirectory soit un dossier, et qu'il contient des éléments.
+       */
       if (rootDirectory.isDirectory()) {
         File[] listFiles = rootDirectory.listFiles();
         if(listFiles == null){
           return;
         }
+        /*
+        Permet de parcourir les fichiers, et de les visiter
+         */
         for (File file : listFiles) {
           if (file.exists()) {
             if (file.isFile()) {
@@ -35,6 +40,9 @@ public class DFSFileExplorer implements IFileExplorer {
             }
           }
         }
+        /*
+        Permet de parcourir les dossiers, et de les explorer
+         */
         for (File file : listFiles) {
           if (file.exists()) {
             if (file.isDirectory()) {
@@ -42,10 +50,6 @@ public class DFSFileExplorer implements IFileExplorer {
             }
           }
         }
-      } else {
-        System.err.println("No folders");
-        return;
-      }
     }
   }
 

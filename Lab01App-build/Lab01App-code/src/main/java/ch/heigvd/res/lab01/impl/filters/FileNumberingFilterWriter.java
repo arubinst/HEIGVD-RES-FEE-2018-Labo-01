@@ -28,6 +28,13 @@ public class FileNumberingFilterWriter extends FilterWriter {
     super(out);
   }
 
+  /**
+   * Permet de prendre chaque caractères et de les envoyer dans la méthode write prennant un seul caractères.
+   * @param str String à numéroter et à indenter
+   * @param off Offset de décalage sur la String
+   * @param len Nombre de caractères à prendre en compte si spécifié
+   * @throws IOException
+   */
   @Override
   public void write(String str, int off, int len) throws IOException {
     //throw new UnsupportedOperationException("The student has not implemented this method yet.");
@@ -36,18 +43,39 @@ public class FileNumberingFilterWriter extends FilterWriter {
     }
   }
 
+  /**
+   * Permet de prendre chaque caractères et de les envoyer dans la méthode write prennant un seul caractères.
+   * @param cbuf Tableau de caractères à numéroter et à indenter
+   * @param off Offset de décalage sur la String
+   * @param len Nombre de caractères à prendre en compte si spécifié
+   * @throws IOException
+   */
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
     //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    for(int index = off; index < cbuf.length && index < off+len; ++index){
+      write(cbuf[index]);
+    }
   }
 
+  /**
+   * Permet de prendre chaque caractères et de les envoyer dans la méthode write prennant un seul caractères.
+   * @param c caractère à analyser
+   * @throws IOException
+   */
   @Override
   public void write(int c) throws IOException {
     //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    /*
+    Permet de tester que l'on est au début de la ligne
+     */
     if(lineNumber == 0){
       ++lineNumber;
       super.write("" + lineNumber + '\t');
     }
+    /*
+    Permet de tester que l'on a un "ligne Feed"
+     */
     if (c == '\n'){
       ++lineNumber;
       super.write(c);
@@ -63,13 +91,23 @@ public class FileNumberingFilterWriter extends FilterWriter {
       super.write('\t');
         lastCharWasReturn = false;
     }
+    /*
+      Permet de tester que l'on a un "carriage return"
+       */
     else if(c == '\r'){
       super.write(c);
       lastCharWasReturn = true;
     }
+    /*
+    Permet de prendre en compte le cas d'un caractère
+     */
     else{
       if(lastCharWasReturn){
         ++lineNumber;
+        /*
+        Permet de décomposer le numéro de ligne dans le cas ou l'on a plus d'un digit (pour éviter l'erreur
+        à l'appel super.write avec un chiffre dépassant 9)
+         */
         if(String.valueOf(lineNumber).length() > 1){
           String tmp = "" + lineNumber;
           for(int index = 0; index < tmp.length(); ++index){
