@@ -61,7 +61,10 @@ public abstract class FileTransformer implements IFileVisitor {
       char[] cbuf = new char[256];
       int nbByte = reader.read(cbuf);
 
-      writer.write(cbuf, 0, nbByte);
+      while(nbByte > 0) {
+        writer.write(cbuf, 0, nbByte);
+        nbByte = reader.read(cbuf);
+      }
 
 
       reader.close();

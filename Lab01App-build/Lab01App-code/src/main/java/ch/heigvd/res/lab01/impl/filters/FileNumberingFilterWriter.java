@@ -43,6 +43,9 @@ public class FileNumberingFilterWriter extends FilterWriter {
     }
     if(!lineSplit[1].equals("")) {
       out.write(numLine + "\t" + lineSplit[1]);
+      if(lineSplit[1].charAt(lineSplit[1].length() - 1) == '\n') {
+        out.write("\n" + numLine + "\t");
+      }
     }
   }
 
@@ -60,13 +63,16 @@ public class FileNumberingFilterWriter extends FilterWriter {
     //throw new UnsupportedOperationException("The student has not implemented this method yet.");
     if(firstChar){
       firstChar = false;
-      out.write(numLine++ + "\t" + (char)c);
+      out.write(numLine++ + "\t");
     }
     if(c == '\n'){
-      out.write(numLine++ + "\t" + (char)c);
+      out.write((char)c + numLine++ + "\t");
+    }
+    else if(c == '\r'){
+
     }
     else{
-      out.write(numLine++ + "\t" + (char)c);
+      out.write(c);
     }
   }
 
