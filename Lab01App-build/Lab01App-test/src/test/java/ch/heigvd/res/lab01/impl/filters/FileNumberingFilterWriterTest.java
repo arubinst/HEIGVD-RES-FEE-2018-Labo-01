@@ -78,6 +78,7 @@ public class FileNumberingFilterWriterTest {
       int c = line.charAt(i);
       writer.write(c);
     }
+    System.out.println(stringWriter.toString());
     Assert.assertEquals("1\tThis is line 1\r\n2\tThis is line 2\n3\tThis is line 3", stringWriter.toString());
   }
 
@@ -129,4 +130,13 @@ public class FileNumberingFilterWriterTest {
     Assert.assertEquals(referenceValue, computedValue);
   }
 
+  @Test
+  public void testSupplementaire() throws IOException{
+    String line = "This is line 1\nThis is line 2\r\nThis is line 3\rThis is line 4";
+    String expected = "1\tThis is line 1\n2\tThis is line 2\r\n3\tThis is line 3\r4\tThis is line 4";
+    StringWriter stringWriter = new StringWriter();
+    FileNumberingFilterWriter writer = new FileNumberingFilterWriter(stringWriter);
+    writer.write(line);
+    Assert.assertEquals(expected, stringWriter.toString());
+  }
 }

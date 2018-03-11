@@ -1,5 +1,7 @@
 package ch.heigvd.res.lab01.impl;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -20,7 +22,55 @@ public class Utils {
    * contain any line separator, then the first element is an empty string.
    */
   public static String[] getNextLine(String lines) {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+    ArrayList<String> tableau = new ArrayList<>();
+    String[] returnTab = new String[2];
+    int beginIndex = 0;
+    int endIndex = 0;
+
+    if (lines.indexOf("\n") != -1){
+
+      beginIndex = 0;
+      endIndex = lines.indexOf("\n");
+
+      while (endIndex != -1) {
+        tableau.add(lines.substring(beginIndex, ++endIndex));
+        beginIndex = endIndex;
+        endIndex = lines.indexOf("\n", endIndex + 1);
+      }
+
+      if (tableau.size() == 1) {
+        tableau.add("");
+      }
+
+      returnTab = tableau.toArray(returnTab);
+
+      return returnTab;
+    }
+    else if (lines.indexOf("\r") != -1){
+      beginIndex = 0;
+      endIndex = lines.indexOf("\r");
+
+      while (endIndex != -1) {
+        tableau.add(lines.substring(beginIndex, ++endIndex));
+        beginIndex = endIndex;
+        endIndex = lines.indexOf("\r", endIndex + 1);
+      }
+
+      if (tableau.size() == 1) {
+        tableau.add("");
+      }
+
+      returnTab = tableau.toArray(returnTab);
+
+      return returnTab;
+    }
+    else{
+      returnTab[0] = "";
+      returnTab[1] = lines;
+      return returnTab;
+    }
   }
 
 }

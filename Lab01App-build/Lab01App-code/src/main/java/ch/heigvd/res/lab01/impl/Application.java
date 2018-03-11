@@ -7,14 +7,16 @@ import ch.heigvd.res.lab01.interfaces.IFileExplorer;
 import ch.heigvd.res.lab01.interfaces.IFileVisitor;
 import ch.heigvd.res.lab01.quotes.QuoteClient;
 import ch.heigvd.res.lab01.quotes.Quote;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+
+import java.io.*;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -92,6 +94,7 @@ public class Application implements IApplication {
        * one method provided by this class, which is responsible for storing the content of the
        * quote in a text file (and for generating the directories based on the tags).
        */
+      storeQuote(quote, "quote-" + i + ".utf8" );
       LOG.info("Received a new joke with " + quote.getTags().size() + " tags.");
       for (String tag : quote.getTags()) {
         LOG.info("> " + tag);
@@ -125,15 +128,38 @@ public class Application implements IApplication {
    * @throws IOException 
    */
   void storeQuote(Quote quote, String filename) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    try{
+      StringBuilder path = new StringBuilder();
+      path.append("./workspace/quotes/");
+      List<String> tags = quote.getTags();
+      for(int i = 0; i < tags.size(); i++){
+        path.append(tags.get(i));
+        path.append("/");
+      }
+
+      File theDir = new File(String.valueOf(path));
+      theDir.mkdirs();
+
+      path.append(filename);
+
+      FileWriter fichier = new FileWriter(String.valueOf(path));
+      fichier.write(quote.getQuote());
+      fichier.close();
+    }
+    catch(Exception e){
+      System.out.println(e);
+    }
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
   }
   
   /**
    * This method uses a IFileExplorer to explore the file system and prints the name of each
    * encountered file and directory.
    */
-  void printFileNames(final Writer writer) {
-    IFileExplorer explorer = new DFSFileExplorer();
+  void printFileNames(final Writer writer){
+    final IFileExplorer explorer = new DFSFileExplorer();
+
     explorer.explore(new File(WORKSPACE_DIRECTORY), new IFileVisitor() {
       @Override
       public void visit(File file) {
@@ -142,19 +168,28 @@ public class Application implements IApplication {
          * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
          * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
          */
+        //A VERIFIER
+
+        try {
+          writer.write(file.getPath());
+          writer.write("\n");
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     });
   }
   
   @Override
   public String getAuthorEmail() {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    return "elie.ndjolibohulu@heig-vd.ch";
+    // throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
   @Override
   public void processQuoteFiles() throws IOException {
     IFileExplorer explorer = new DFSFileExplorer();
-    explorer.explore(new File(WORKSPACE_DIRECTORY), new CompleteFileTransformer());    
+    explorer.explore(new File("./workspace/"), new CompleteFileTransformer());
   }
 
 }
