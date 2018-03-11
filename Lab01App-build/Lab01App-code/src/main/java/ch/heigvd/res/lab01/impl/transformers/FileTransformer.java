@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+
 /**
  * This abstract class implements the IFileVisitor interface and has the responsibility
  * to open an input text file, to read its content, to apply a number of transformations
@@ -52,7 +54,13 @@ public abstract class FileTransformer implements IFileVisitor {
       Reader reader = new InputStreamReader(new FileInputStream(file), "UTF-8");
       Writer writer = new OutputStreamWriter(new FileOutputStream(file.getPath()+ ".out"), "UTF-8"); // the bug fix by teacher
       writer = decorateWithFilters(writer);
-
+      /*
+      Boucle permettant de prendre caractère par caractère afin de les "transformer"
+       */
+      int character;
+        while((character = reader.read()) != -1){
+          writer.write(character);
+      }
       /*
        * There is a missing piece here: you have an input reader and an ouput writer (notice how the 
        * writer has been decorated by the concrete subclass!). You need to write a loop to read the

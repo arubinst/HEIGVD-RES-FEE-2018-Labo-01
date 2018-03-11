@@ -148,6 +148,9 @@ public class ApplicationTest {
     String reference = sb.toString();
     boolean applicationReturnsValidPlatformSpecificFilePaths = (reference.equals(output));
     boolean applicationReturnsValidUnixFilePaths = (reference.equals(outputWithUnixSeparator));
+    System.out.println("reference: [" + reference + "]");
+    System.out.println("output: [" + output + "]");
+    System.out.println("output with Unix : [" + output + "]");
     boolean applicationReturnsValidFilePaths = (applicationReturnsValidPlatformSpecificFilePaths || applicationReturnsValidUnixFilePaths);
 
     assertTrue(applicationReturnsValidFilePaths);
