@@ -14,9 +14,45 @@ import java.io.File;
  */
 public class DFSFileExplorer implements IFileExplorer {
 
+  private boolean first_visit = false;
+
   @Override
   public void explore(File rootDirectory, IFileVisitor vistor) {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
-  }
 
+    /*File[] list_file = rootDirectory.listFiles();
+    for (int i = 0; i < list_file.length; i++) {
+      vistor.visit(list_file[i]);
+      if (list_file[i].isDirectory()) {
+        explore(list_file[i], vistor);
+      }
+    }
+    */
+
+    if (!first_visit){
+      vistor.visit(rootDirectory);
+      first_visit = true;
+      if (rootDirectory.isDirectory()) {
+        for (File list_file_2nd : rootDirectory.listFiles()) {
+          if (list_file_2nd.isFile()) {
+            vistor.visit(list_file_2nd);
+          }
+        }
+      }
+    }
+    if (rootDirectory.isDirectory()) {
+      for (File list_files : rootDirectory.listFiles()) {
+        if (list_files.isDirectory()) {
+          vistor.visit(list_files);
+          for (File list_file_2nd : list_files.listFiles()) {
+            if (list_file_2nd.isFile()) {
+              vistor.visit(list_file_2nd);
+            }
+          }
+          explore(list_files, vistor);
+        }
+      }
+    }
+
+
+  }
 }

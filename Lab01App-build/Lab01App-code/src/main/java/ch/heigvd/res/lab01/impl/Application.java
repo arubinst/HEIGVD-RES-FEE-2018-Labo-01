@@ -7,12 +7,8 @@ import ch.heigvd.res.lab01.interfaces.IFileExplorer;
 import ch.heigvd.res.lab01.interfaces.IFileVisitor;
 import ch.heigvd.res.lab01.quotes.QuoteClient;
 import ch.heigvd.res.lab01.quotes.Quote;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -86,6 +82,8 @@ public class Application implements IApplication {
     QuoteClient client = new QuoteClient();
     for (int i = 0; i < numberOfQuotes; i++) {
       Quote quote = client.fetchQuote();
+
+      storeQuote(quote,"quote-"+i+".utf8");
       /* There is a missing piece here!
        * As you can see, this method handles the first part of the lab. It uses the web service
        * client to fetch quotes. We have removed a single line from this method. It is a call to
@@ -125,7 +123,27 @@ public class Application implements IApplication {
    * @throws IOException 
    */
   void storeQuote(Quote quote, String filename) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+
+    FileWriter fos = null;
+    String full_path = WORKSPACE_DIRECTORY;
+
+    for (String tag : quote.getTags()){
+      full_path += "/" + tag.toString();
+    }
+    new File(full_path).mkdirs();
+
+    full_path += "/" + filename;
+    File store_file = new File(full_path);
+    store_file.createNewFile();
+
+    fos = new FileWriter(store_file);
+    fos.write(quote.getQuote());
+    fos.flush();
+    fos.close();
+
+
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
   
   /**
@@ -137,6 +155,14 @@ public class Application implements IApplication {
     explorer.explore(new File(WORKSPACE_DIRECTORY), new IFileVisitor() {
       @Override
       public void visit(File file) {
+
+
+        try {
+          writer.write(file.getPath()  + "\n");
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+
         /*
          * There is a missing piece here. Notice how we use an anonymous class here. We provide the implementation
          * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
@@ -148,7 +174,9 @@ public class Application implements IApplication {
   
   @Override
   public String getAuthorEmail() {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+    return "support@heig-vd.ch";
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
   @Override
