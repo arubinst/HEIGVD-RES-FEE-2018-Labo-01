@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 
+import java.nio.charset.*;
+
 /**
  *
  * @author Olivier Liechti
@@ -86,6 +88,9 @@ public class Application implements IApplication {
     QuoteClient client = new QuoteClient();
     for (int i = 0; i < numberOfQuotes; i++) {
       Quote quote = client.fetchQuote();
+      ////MODIF
+      storeQuote(quote, "quote-"+i+".utf8");
+      
       /* There is a missing piece here!
        * As you can see, this method handles the first part of the lab. It uses the web service
        * client to fetch quotes. We have removed a single line from this method. It is a call to
@@ -125,7 +130,17 @@ public class Application implements IApplication {
    * @throws IOException 
    */
   void storeQuote(Quote quote, String filename) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    // throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    String delimiter = "/";
+
+    // https://stackoverflow.com/a/26195047/1336418
+    String relativPath = WORKSPACE_DIRECTORY + delimiter + String.join(delimiter, quote.getTags()) + delimiter;
+    new File(relativPath).mkdirs();
+    OutputStreamWriter writer = new OutputStreamWriter(
+    new FileOutputStream(relativPath + "/" + filename), StandardCharsets.UTF_8);
+    writer.write(quote.getQuote());
+    writer.flush();
+    writer.close();
   }
   
   /**
@@ -142,13 +157,19 @@ public class Application implements IApplication {
          * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
          * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
          */
+        try{
+            writer.write(file.getPath() + "\n");
+        }catch(IOException e){
+            e.printStackTrace();
+        }
       }
     });
   }
   
   @Override
   public String getAuthorEmail() {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    return "guillaume.schranz@heig-vd.ch";
   }
 
   @Override
