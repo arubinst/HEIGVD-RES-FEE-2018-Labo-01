@@ -32,7 +32,6 @@ public class UpperCaseFilterWriter extends FilterWriter {
 
   @Override
   public void write(int c) throws IOException {
-    System.out.println(c);
     if (c < 123 && c > 96) {
       super.write(c - 32);
     }

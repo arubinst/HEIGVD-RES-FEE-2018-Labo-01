@@ -1,5 +1,7 @@
 package ch.heigvd.res.lab01.impl.filters;
 
+import ch.heigvd.res.lab01.impl.Utils;
+
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -23,19 +25,78 @@ public class FileNumberingFilterWriter extends FilterWriter {
     super(out);
   }
 
+  private int count=1;
+  private boolean nouveau = true;
+
   @Override
   public void write(String str, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+      int addedChar = 0;
+      String[] next = Utils.getNextLine(str.substring(off, off+len));
+      StringBuilder number = new StringBuilder();
+      if(nouveau){
+          number.append(count+"");
+          number.append("\t");
+          addedChar+=2;
+          nouveau = false;
+      }
+      while(!next[0].equals("")){
+          count++;
+          number.append(next[0]);
+          number.append(count+"");
+          number.append("\t");
+          addedChar+=2;
+          if (count>9){
+              addedChar++;
+          }
+          if(count>99){
+              addedChar++;
+          }
+          next = Utils.getNextLine(next[1]);
+      }
+      number.append(next[1]);
+      super.write(number.toString(), 0, len+addedChar);
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+      write(cbuf.toString(), off, len);
   }
 
+
+
+  private int previous;
   @Override
   public void write(int c) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+      if (nouveau){
+          super.write(""+count);
+          super.write('\t');
+          nouveau=false;
+          count++;
+      }
+      if (c == '\n') {
+          if (previous == '\r') {
+              super.write(previous);
+          }
+          super.write(c);
+          super.write(""+count);
+          super.write('\t');
+          count++;
+      }
+      else if (previous == '\r') {
+          super.write(previous);
+          super.write(""+count);
+          super.write('\t');
+          count++;
+          super.write(c);
+      }
+      else if(c=='\r'){
+
+      }
+      else {
+          super.write(c);
+      }
+      previous=c;
   }
+
 
 }
