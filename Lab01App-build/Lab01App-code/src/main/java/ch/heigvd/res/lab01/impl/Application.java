@@ -91,11 +91,11 @@ public class Application implements IApplication {
        * one method provided by this class, which is responsible for storing the content of the
        * quote in a text file (and for generating the directories based on the tags).
        */
-      storeQuote(quote, "quote-" + i + ".utf8");
       LOG.info("Received a new joke with " + quote.getTags().size() + " tags.");
       for (String tag : quote.getTags()) {
         LOG.info("> " + tag);
       }
+      storeQuote(quote, "quote-" + i + ".utf8");
     }
   }
   
@@ -127,7 +127,10 @@ public class Application implements IApplication {
   void storeQuote(Quote quote, String filename) throws IOException {
     String path = WORKSPACE_DIRECTORY + "/" + StringUtils.join(quote.getTags(), "/") + "/";
     new File(path).mkdirs();
-    new OutputStreamWriter(new FileOutputStream(path + filename), StandardCharsets.UTF_8).write(quote.getQuote());
+    OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(path + filename), StandardCharsets.UTF_8);
+    writer.write(quote.getQuote());
+    writer.flush();
+    writer.close();
   }
   
   /**
@@ -139,9 +142,8 @@ public class Application implements IApplication {
     explorer.explore(new File(WORKSPACE_DIRECTORY), new IFileVisitor() {
       @Override
       public void visit(File file) {
-//TODO CHECK THIS LINE I AM NOT SURE
         try {
-          writer.write(file.getPath());
+          writer.append(file.toString()).append("\n");
         } catch (IOException e) {
           e.printStackTrace();
         }

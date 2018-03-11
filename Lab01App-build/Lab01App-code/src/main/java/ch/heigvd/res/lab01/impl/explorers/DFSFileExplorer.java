@@ -4,6 +4,7 @@ import ch.heigvd.res.lab01.interfaces.IFileExplorer;
 import ch.heigvd.res.lab01.interfaces.IFileVisitor;
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Arrays;
 
 /**
  * This implementation of the IFileExplorer interface performs a depth-first
@@ -32,14 +33,16 @@ public class DFSFileExplorer implements IFileExplorer {
 
         vistor.visit(rootDirectory);
         if(childrenFiles != null) {
-            for (File f : childrenFiles) {
+            Arrays.sort(childrenFiles);
+            for (File f : childrenFiles)
                 vistor.visit(f);
-            }
         }
-        if(childrenFolders != null)
+
+        if(childrenFolders != null) {
+            Arrays.sort(childrenFolders);
             for(File f: childrenFolders)
                 explore(f, vistor);
-
+        }
     }
 
 }
