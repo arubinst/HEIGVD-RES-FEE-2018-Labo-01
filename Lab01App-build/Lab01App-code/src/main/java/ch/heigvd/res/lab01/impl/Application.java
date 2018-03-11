@@ -9,6 +9,7 @@ import ch.heigvd.res.lab01.quotes.QuoteClient;
 import ch.heigvd.res.lab01.quotes.Quote;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,12 +84,7 @@ public class Application implements IApplication {
         QuoteClient client = new QuoteClient();
         for (int i = 0; i < numberOfQuotes; i++) {
             Quote quote = client.fetchQuote();
-            /* There is a missing piece here!
-             * As you can see, this method handles the first part of the lab. It uses the web service
-             * client to fetch quotes. We have removed a single line from this method. It is a call to
-             * one method provided by this class, which is responsible for storing the content of the
-             * quote in a text file (and for generating the directories based on the tags).
-             */
+            storeQuote(quote, "quote-" + i + ".utf8");
             LOG.info("Received a new joke with " + quote.getTags().size() + " tags.");
             for (String tag : quote.getTags()) {
                 LOG.info("> " + tag);
@@ -127,19 +123,17 @@ public class Application implements IApplication {
         // Foreach loop on tagList for creation of sub-folders (using WORKSPACE_DIRECTORY)
         for (String tag: tagsList) {
             //create sub-folder for the current tag
-            path += tag;
+            path += "/" + tag;
             new File(path).mkdirs();
         }
         // after reaching the last folder to create, store the quote in quote-x.utf8 (filename in param) file
         String quoteValue = quote.getQuote();
         filename = path + "/" + filename;
-        new File(filename).createNewFile();
+
         FileOutputStream fos = new FileOutputStream(filename);
-        //BufferedOutputStream bos = new BufferedOutputStream(fos);
-        //ByteArrayOutputStream os = new ByteArrayOutputStream();
-        OutputStreamWriter writer = new OutputStreamWriter(fos);
+        OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
         writer.write(quoteValue);
-        writer.flush();
+        writer.close();
     }
 
     /**
@@ -157,20 +151,16 @@ public class Application implements IApplication {
                  * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
                  */
                 try {
-                    writer.write(file.getPath() + file.getName());
+                    writer.write(file.getPath() + "\n");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //file.getPath();
-                //file.getAbsoluteFile();
-                //file.getAbsolutePath();
             }
         });
     }
 
     @Override
     public String getAuthorEmail() {
-        //throw new UnsupportedOperationException("The student has not implemented this method yet.");
         return "yannis.ansermoz@heig-vd.ch";
     }
 
