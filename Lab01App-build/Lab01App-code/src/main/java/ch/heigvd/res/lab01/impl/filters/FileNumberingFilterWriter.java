@@ -68,9 +68,7 @@ public class FileNumberingFilterWriter extends FilterWriter {
   @Override
   public void write(int c) throws IOException {
       if (nouveau){
-          super.write(""+count);
-          super.write('\t');
-          nouveau=false;
+          super.write("");
           count++;
       }
       if (c == '\n') {
