@@ -7,14 +7,13 @@ import ch.heigvd.res.lab01.interfaces.IFileExplorer;
 import ch.heigvd.res.lab01.interfaces.IFileVisitor;
 import ch.heigvd.res.lab01.quotes.QuoteClient;
 import ch.heigvd.res.lab01.quotes.Quote;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.deploy.util.StringUtils;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -96,6 +95,7 @@ public class Application implements IApplication {
       for (String tag : quote.getTags()) {
         LOG.info("> " + tag);
       }
+      storeQuote(quote, "quote-" + i + ".utf8");
     }
   }
   
@@ -125,7 +125,13 @@ public class Application implements IApplication {
    * @throws IOException 
    */
   void storeQuote(Quote quote, String filename) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+    String path = WORKSPACE_DIRECTORY + "/" + StringUtils.join(quote.getTags(), "/") + "/";
+    new File(path).mkdirs();
+    OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(path + "/" + filename), StandardCharsets.UTF_8);
+    writer.write(quote.getQuote());
+    writer.flush();
+    writer.close();
   }
   
   /**
@@ -137,6 +143,11 @@ public class Application implements IApplication {
     explorer.explore(new File(WORKSPACE_DIRECTORY), new IFileVisitor() {
       @Override
       public void visit(File file) {
+        try {
+          writer.append(file + "\n");
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
         /*
          * There is a missing piece here. Notice how we use an anonymous class here. We provide the implementation
          * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
@@ -148,7 +159,7 @@ public class Application implements IApplication {
   
   @Override
   public String getAuthorEmail() {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    return "alexandre.mosca@heig-vd.ch";
   }
 
   @Override

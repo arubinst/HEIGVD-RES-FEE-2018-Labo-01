@@ -18,6 +18,9 @@ import java.util.logging.Logger;
 public class FileNumberingFilterWriter extends FilterWriter {
 
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
+  private int lineNumber = 1;
+  private boolean fstLine = true;
+  private int lastCharSeen = ' ';
 
   public FileNumberingFilterWriter(Writer out) {
     super(out);
@@ -25,17 +28,39 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   @Override
   public void write(String str, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    this.write(str.toCharArray(), off, len);
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    for(int i = off; i < off + len; i++){
+      this.write(cbuf[i]);
+    }
   }
 
   @Override
   public void write(int c) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    String tabChar = "\t";
+    int returnChar = '\r';
+    int newLineChar = '\n';
+
+    if(fstLine) {
+      fstLine = false;
+      out.write(lineNumber + tabChar);
+    }
+
+    if(c == newLineChar) {
+      lineNumber++;
+      out.write("" + (char)c + lineNumber + tabChar);
+    }else if(lastCharSeen == returnChar){
+      lineNumber++;
+      out.write(lineNumber + tabChar + (char)c);
+    }else {
+      out.write(c);
+    }
+
+    lastCharSeen = c;
   }
+
 
 }
