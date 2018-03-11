@@ -87,7 +87,7 @@ public class ApplicationTest {
     Application app = new Application();
     app.clearOutputDirectory();
 
-    String rootDirectory = Application.WORKSPACE_DIRECTORY;
+    String rootDirectory = Application.WORKSPACE_QUOTES_DIRECTORY;
     FileUtils.deleteDirectory(new File(rootDirectory));
     new File(rootDirectory).mkdir();
 
