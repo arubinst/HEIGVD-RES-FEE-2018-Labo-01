@@ -3,6 +3,7 @@ package ch.heigvd.res.lab01.impl.explorers;
 import ch.heigvd.res.lab01.interfaces.IFileExplorer;
 import ch.heigvd.res.lab01.interfaces.IFileVisitor;
 import java.io.File;
+import java.lang.reflect.Array;
 
 /**
  * This implementation of the IFileExplorer interface performs a depth-first
@@ -17,20 +18,34 @@ public class DFSFileExplorer implements IFileExplorer {
   @Override
   public void explore(File rootDirectory, IFileVisitor vistor) {
     //throw new UnsupportedOperationException("The student has not implemented this method yet.");
-    if(rootDirectory != null) {
-      for (File file : rootDirectory.listFiles()) {
-        if(file.isDirectory()){
-          explore(file, vistor);
+    /*
+    Permet de tester si le répertoire de travail est inexistant
+     */
+    if (rootDirectory.exists()) {
+      vistor.visit(rootDirectory);
+      if (rootDirectory.isDirectory()) {
+        File[] listFiles = rootDirectory.listFiles();
+        if(listFiles == null){
+          return;
         }
-        else {
-          vistor.visit(file);
-
+        for (File file : listFiles) {
+          if (file.exists()) {
+            if (file.isFile()) {
+              vistor.visit(file);
+            }
+          }
         }
-        System.out.println(file.toString());
+        for (File file : listFiles) {
+          if (file.exists()) {
+            if (file.isDirectory()) {
+              explore(file, vistor);
+            }
+          }
+        }
+      } else {
+        System.err.println("No folders");
+        return;
       }
-    }
-    else{
-      System.err.println("No folders");
     }
   }
 

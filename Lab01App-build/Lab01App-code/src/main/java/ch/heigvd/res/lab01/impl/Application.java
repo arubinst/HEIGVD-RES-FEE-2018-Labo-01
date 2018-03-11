@@ -103,14 +103,7 @@ public class Application implements IApplication {
         }
       });
 
-      String path = WORKSPACE_DIRECTORY;
-      for (String tag : tmp) {
-        LOG.info("> " + tag);
-        path = path + "\\" + tag;
-      }
-      path = path + "\\";
-
-      storeQuote(quote, path, i);
+      storeQuote(quote, QUOTENAME + i + ".utf8");
       /*
       Permet de créer les dossiers nécessaires à l'arborescence voulu
        *
@@ -156,21 +149,28 @@ public class Application implements IApplication {
    * 
    * @param quote the quote object, with tags and text
    * @param filename the name of the file to create and where to store the quote text
-   * @param index the current index of quote
    * @throws IOException 
    */
-  void storeQuote(Quote quote, String filename, int index) throws IOException {
+  void storeQuote(Quote quote, String filename) throws IOException {
     //throw new UnsupportedOperationException("The student has not implemented this method yet.");
 
     /*
     Permet de créer le dossier à partir du nom de fichier généré avec les tags.
      */
-    File f = new File(filename);
-    f.mkdirs();
+    String path = WORKSPACE_DIRECTORY;
+    for (String tag : quote.getTags()) {
+      LOG.info("> " + tag);
+      path = path + "\\" + tag;
+    }
+    path = path + "\\";
+    File directory = new File(path);
+    directory.mkdirs();
       /*
       Permet d'enregistrer la quote
        */
-    OutputStreamWriter newOutput = new OutputStreamWriter(new FileOutputStream(filename + QUOTENAME + index + ".utf8"), "UTF-8");
+      File fileQuote = new File(directory, filename);
+      fileQuote.createNewFile();
+    OutputStreamWriter newOutput = new OutputStreamWriter(new FileOutputStream(fileQuote), "UTF-8");
 
     newOutput.write(quote.getQuote());
     newOutput.close();
@@ -190,6 +190,13 @@ public class Application implements IApplication {
          * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
          * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
          */
+        try {
+          writer.write(file.getPath() + '\n');
+          System.out.println(file.getPath());
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+
       }
     });
   }
