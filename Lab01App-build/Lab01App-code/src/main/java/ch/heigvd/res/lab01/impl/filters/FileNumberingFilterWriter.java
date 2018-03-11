@@ -46,6 +46,7 @@ public class FileNumberingFilterWriter extends FilterWriter {
       if(lineSplit[1].charAt(lineSplit[1].length() - 1) == '\n') {
         out.write("\n" + numLine + "\t");
       }
+      
     }
   }
 
