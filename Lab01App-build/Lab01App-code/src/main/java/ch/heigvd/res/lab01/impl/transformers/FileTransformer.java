@@ -41,24 +41,32 @@ public abstract class FileTransformer implements IFileVisitor {
    * @param writer the writer connected to the output file
    * @return the writer decorated by 0, 1 or more filter writers
    */
-  public abstract Writer decorateWithFilters(Writer writer);
+  public abstract Writer decorateWithFilters(Writer writer) throws IOException;
 
   @Override
-  public void visit(File file) {
+  public void visit(File file) throws IOException {
     if (!file.isFile()) {
       return;
     }
+
     try {
       Reader reader = new InputStreamReader(new FileInputStream(file), "UTF-8");
       Writer writer = new OutputStreamWriter(new FileOutputStream(file.getPath()+ ".out"), "UTF-8"); // the bug fix by teacher
       writer = decorateWithFilters(writer);
 
+      int var = 1;
+
+      while (var != -1) {
+        var = reader.read();
+        if (var != -1) {
+          writer.write((char)var);
+        }
+      }
       /*
        * There is a missing piece here: you have an input reader and an ouput writer (notice how the 
        * writer has been decorated by the concrete subclass!). You need to write a loop to read the
        * characters and write them to the writer.
        */
-      
       reader.close();
       writer.flush();
       writer.close();
