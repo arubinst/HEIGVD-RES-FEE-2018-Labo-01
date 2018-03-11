@@ -11,13 +11,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 //
 import java.util.List;
-/*
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.FileWriter;
-import java.io.BufferedWriter;
-*/
-
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
@@ -102,8 +95,7 @@ public class Application implements IApplication {
        * quote in a text file (and for generating the directories based on the tags).
              */
 
-            //ME
-            this.storeQuote(quote, "quote-" + (i + 1) + ".utf8");
+            storeQuote(quote, "quote-" + (i + 1) + ".utf8");
 
             LOG.info("Received a new joke with " + quote.getTags().size() + " tags.");
             for (String tag : quote.getTags()) {
@@ -120,7 +112,7 @@ public class Application implements IApplication {
      * @throws IOException
      */
     void clearOutputDirectory() throws IOException {
-        FileUtils.deleteDirectory(new File(WORKSPACE_QUOTES_DIRECTORY));
+        FileUtils.deleteDirectory(new File(WORKSPACE_DIRECTORY));
     }
 
     /**
@@ -140,66 +132,40 @@ public class Application implements IApplication {
      * @throws IOException
      */
     void storeQuote(Quote quote, String filename) throws IOException {
-        //try{
-            //String path = new String(WORKSPACE_QUOTES_DIRECTORY);        
-            //File workspace = new File(path);
-            /*
-            StringBuilder path = new StringBuilder();
-            path.append(WORKSPACE_QUOTES_DIRECTORY);
-            
-            List<String> listTags = quote.getTags();
-            for(String tag : listTags){
-                path.append(tag);
-                path.append("/");
-            }
-            
-            File workspace = new File(String.valueOf(path));
-            workspace.mkdirs();
-            
-            path.append("/");
-            path.append(filename);
-            
-            FileOutputStream fis = new FileOutputStream(String.valueOf(path));
 
-            Writer fw = new OutputStreamWriter(fis, "UTF-8");
-            fw.write(quote.getQuote());
-            fw.close();
-           */ 
-               
-        String path = new String(WORKSPACE_QUOTES_DIRECTORY);
-        String temp = new String();
+        /* Relative path to create files and folders */
+        StringBuilder path = new StringBuilder(String.valueOf(WORKSPACE_QUOTES_DIRECTORY));
 
-        File workspace = new File(path);
-
+        /* Create the folder workspace if it doesn't exists yet */
+        File workspace = new File(String.valueOf(path));
         if (!workspace.exists()) {
             workspace.mkdirs();
         }
-       
-        int nbTags = quote.getTags().size();
-        //System.out.println(nbTags);
-        
-        //ME
+
         try {
 
-            for (int i = 0; i < nbTags; ++i) { 
-                path = path.concat("/" + quote.getTags().get(i));
-                File directory = new File(path);
+            /* List of the names of the folder and subfolders */
+            List<String> listTags = quote.getTags();
+            for (String tag : listTags) {
+                path.append(tag);
+                path.append("/");
 
+                /* Create the the folder and subfolders if they don't exist yet*/
+                File directory = new File(String.valueOf(path));
                 if (!directory.exists()) {
                     directory.mkdir();
                 }
             }
-            
-            File file = new File(path + "/" + filename);
-            
-            FileOutputStream fis = new FileOutputStream(file);
 
+            /* Create the quote. Then open it, write on it and close it */
+            File file = new File(path + "/" + filename);
+            FileOutputStream fis = new FileOutputStream(file);
             Writer fw = new OutputStreamWriter(fis, "UTF-8");
             fw.write(quote.getQuote());
             fw.close();
 
-        } catch (Exception io) {
-            throw new UnsupportedOperationException("The student has not implemented this method yet.");
+        } catch (IOException io) {
+            io.printStackTrace();
         }
 
     }
@@ -209,7 +175,7 @@ public class Application implements IApplication {
      * the name of each encountered file and directory.
      */
     void printFileNames(final Writer writer) {
-        //System.out.println(writer);
+
         IFileExplorer explorer = new DFSFileExplorer();
         explorer.explore(new File(WORKSPACE_QUOTES_DIRECTORY), new IFileVisitor() {
             @Override
@@ -219,27 +185,20 @@ public class Application implements IApplication {
          * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
          * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
                  */
-               
-                try{
-                    // writer.write(file.getAbsolutePath().toString())
-                    writer.write(file.getPath());
-                    writer.write("\n");
-                }catch(Exception e){
+
+                try {
+                    writer.write(file.getPath() + "\n");
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-                
+
             }
         });
     }
 
     @Override
     public String getAuthorEmail() {
-        try {
-            return "nuno.cercaabrantessilva@heig-vd.ch";
-        } catch (Exception io) {
-            throw new UnsupportedOperationException("The student has not implemented this method yet.");
-        }
-
+        return "nuno.cercaabrantessilva@heig-vd.ch";
     }
 
     @Override

@@ -10,6 +10,7 @@ public class Utils {
 
   private static final Logger LOG = Logger.getLogger(Utils.class.getName());
 
+  /* Constante variable for the differente kind of separators */
   private static final String LINE_FEED = "\n";
   private static final String CARRIAGE_RETURN = "\r";
   private static final String LINE_FEED_AND_CARRIAGE_RETURN = "\r\n";
@@ -25,14 +26,17 @@ public class Utils {
    */
   public static String[] getNextLine(String lines) {
       String[] nextLine = new String[2];
-      try{
-          
-          
+      try{ 
           int OS;
+          
+          /* It searches the index of the next separator. If the value is -1
+             it means that the separator was not found in the string. */
           int indexMAC = findCarriageReturn(lines);
           int indexUnix = findLineFeed(lines);
           int indexWindows = findLineFeedAndCarriageReturn(lines);
           
+          /* It founds the OS looking in the separator. It can happen that the 
+             string doesn't have any separator. */
           if(indexUnix > -1){
                 if(indexWindows > - 1 && indexUnix == indexWindows){
                     OS = 3; // Windows
@@ -45,6 +49,7 @@ public class Utils {
               OS = 0; // Any separator
           }
           
+          /* Acts depending the OS */
           if(OS == 0){
               nextLine[0] = "";
               nextLine[1] = lines.substring(0);
@@ -58,25 +63,24 @@ public class Utils {
               nextLine[0] = lines.substring(0, indexMAC + 1);
               nextLine[1] = lines.substring(indexMAC + 1);
           }
-          
-          
-          
-          
-          
+  
       }catch(Exception e){
           e.printStackTrace();
       }
       return nextLine;
   }
   
-  
+    /* Methode to find the index of the separator \n */
     private static int findLineFeed(String str){
         return str.indexOf(LINE_FEED);
     }
+    
+    /* Methode to find the index of the separator \r */
     private static int findCarriageReturn(String str){
         return str.indexOf(CARRIAGE_RETURN);
     }
 
+    /* Methode to find the index of the separator \r\n */
     private static int findLineFeedAndCarriageReturn(String str){
         return str.indexOf(LINE_FEED_AND_CARRIAGE_RETURN);
     }
