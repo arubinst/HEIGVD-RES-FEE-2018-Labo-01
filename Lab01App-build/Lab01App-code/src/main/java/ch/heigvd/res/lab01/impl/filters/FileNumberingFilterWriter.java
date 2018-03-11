@@ -31,13 +31,18 @@ public class FileNumberingFilterWriter extends FilterWriter {
   @Override
   public void write(String str, int off, int len) throws IOException {
     //throw new UnsupportedOperationException("The student has not implemented this method yet.");
-    String[] lineSplit = Utils.getNextLine(str.substring(off, len + off));
-    while(lineSplit[0] != "") {
-      out.write((char)numLine + lineSplit[0]);
+    int endOff = off + len;
+    if(endOff > str.length()){
+      endOff = str.length();
+    }
+    String[] lineSplit = Utils.getNextLine(str.substring(off, endOff));
+    while(!lineSplit[0].equals("")) {
+      out.write(numLine + "\t" + lineSplit[0]);
       lineSplit = Utils.getNextLine(lineSplit[1]);
-      if(lineSplit[1] != "") {
-          numLine++;
-      }
+      numLine++;
+    }
+    if(!lineSplit[1].equals("")) {
+      out.write(numLine + "\t" + lineSplit[1]);
     }
   }
 

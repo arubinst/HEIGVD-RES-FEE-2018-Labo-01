@@ -20,10 +20,6 @@ public class Utils {
    * contain any line separator, then the first element is an empty string.
    */
   public static String[] getNextLine(String lines) {
-    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
-    //if(currentChar == \r or currentChar == \n)
-    //return lines.split("\n");
-    //find + substring
     String[] separated = new String[2];
 
     int pos = lines.indexOf("\r\n");
