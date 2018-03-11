@@ -1,5 +1,6 @@
 package ch.heigvd.res.lab01.impl;
 
+import java.lang.reflect.Array;
 import java.util.logging.Logger;
 
 /**
@@ -20,7 +21,29 @@ public class Utils {
    * contain any line separator, then the first element is an empty string.
    */
   public static String[] getNextLine(String lines) {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    int charPosition = 0;
+
+    if(!lines.isEmpty()){
+        while (true) {
+            char car = lines.charAt(charPosition);
+
+            if (car == '\n' || car == '\r') {
+                if (charPosition+1<lines.length()) {
+                    if (car == '\r' && lines.charAt(charPosition + 1) == '\n') {
+                        return new String[]{lines.substring(0, charPosition + 2), lines.substring(charPosition + 2, lines.length())};
+                    }
+                }
+                return new String[]{lines.substring(0, charPosition+1), lines.substring(charPosition+1, lines.length())};
+            } else {
+                charPosition++;
+                //pas de à la ligne, il faut tester le suivant char.
+                if (lines.length() == charPosition) {
+                    return new String[]{"", lines};
+                }
+            }
+        }
+    }
+    return new String[]{"",""};
   }
 
 }

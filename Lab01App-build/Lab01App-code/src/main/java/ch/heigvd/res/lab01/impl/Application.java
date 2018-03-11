@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -20,6 +21,7 @@ import org.apache.commons.io.FileUtils;
 /**
  *
  * @author Olivier Liechti
+ *
  */
 public class Application implements IApplication {
 
@@ -46,7 +48,8 @@ public class Application implements IApplication {
       numberOfQuotes = Integer.parseInt(args[0]);
     } catch (Exception e) {
       System.err.println("The command accepts a single numeric argument (number of quotes to fetch)");
-      System.exit(-1);
+      //System.exit(-1);
+        numberOfQuotes = 20;
     }
         
     Application app = new Application();
@@ -60,7 +63,7 @@ public class Application implements IApplication {
        * Step 2 : use the QuotesClient to fetch quotes; store each quote in a file
        */
       app.fetchAndStoreQuotes(numberOfQuotes);
-      
+
       /*
        * Step 3 : use a file explorer to traverse the file system; print the name of each directory and file
        */
@@ -84,6 +87,7 @@ public class Application implements IApplication {
   public void fetchAndStoreQuotes(int numberOfQuotes) throws IOException {
     clearOutputDirectory();
     QuoteClient client = new QuoteClient();
+    new File(WORKSPACE_DIRECTORY).mkdir();
     for (int i = 0; i < numberOfQuotes; i++) {
       Quote quote = client.fetchQuote();
       /* There is a missing piece here!
@@ -92,6 +96,7 @@ public class Application implements IApplication {
        * one method provided by this class, which is responsible for storing the content of the
        * quote in a text file (and for generating the directories based on the tags).
        */
+      storeQuote(quote, "quote-"+quote.getValue().getId()+".utf8");
       LOG.info("Received a new joke with " + quote.getTags().size() + " tags.");
       for (String tag : quote.getTags()) {
         LOG.info("> " + tag);
@@ -125,7 +130,19 @@ public class Application implements IApplication {
    * @throws IOException 
    */
   void storeQuote(Quote quote, String filename) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+      StringBuilder chemin = new StringBuilder(WORKSPACE_DIRECTORY);
+      for (String s:quote.getTags()){
+          chemin.append("/"+s);
+          try{ new File(chemin.toString()).mkdirs(); } catch (SecurityException e){}
+      }
+      chemin.append("/"+filename);
+      File f = new File(chemin.toString());
+      f.createNewFile();
+      FileOutputStream fOS = new FileOutputStream(f);
+      OutputStreamWriter writer = new OutputStreamWriter(fOS, StandardCharsets.UTF_8);
+      writer.write(quote.getValue().getJoke());
+      writer.flush();
+      writer.close();
   }
   
   /**
@@ -137,18 +154,21 @@ public class Application implements IApplication {
     explorer.explore(new File(WORKSPACE_DIRECTORY), new IFileVisitor() {
       @Override
       public void visit(File file) {
-        /*
-         * There is a missing piece here. Notice how we use an anonymous class here. We provide the implementation
-         * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
-         * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
-         */
+          /*
+           * There is a missing piece here. Notice how we use an anonymous class here. We provide the implementation
+           * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
+           * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
+           */
+          try {
+              writer.write( file.getPath()+"\n");
+          } catch (IOException e) {}
       }
     });
   }
   
   @Override
   public String getAuthorEmail() {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    return "leonard.favre1@heig-vd.ch";
   }
 
   @Override
