@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Olivier Liechti
+ * @author Kevin Pradervand
  */
 public class Utils {
 
@@ -20,7 +20,36 @@ public class Utils {
    * contain any line separator, then the first element is an empty string.
    */
   public static String[] getNextLine(String lines) {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+    String[] separatedString = new String[2];
+
+    String[] newLineChar = {"\r\n","\n","\r"};
+    int position = 0;
+
+    //contrôle des différents charactères de fin de ligne
+    for (String nL : newLineChar){
+      position =  lines.indexOf(nL);
+      if (position != -1){
+        if (nL == "\r\n") {
+          position++;
+          position++;
+          break;
+        }else{
+          position++;
+          break;
+        }
+      }
+    }
+    if(position == -1){
+      return new String[]{"", lines};
+    }else {
+
+      separatedString[0] = lines.substring(0, position);
+      separatedString[1] = lines.substring(position);
+
+      return separatedString;
+    }
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
 }
